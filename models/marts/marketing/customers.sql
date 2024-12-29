@@ -28,7 +28,7 @@ customer_orders as (
 lifetime as(
     select
         customer_id
-        , SUM(amount) amount
+        , SUM(SAFE_DIVIDE(amount,100)) amount
     from {{ ref('fct_orders') }}
     GROUP BY ALL
 ),
@@ -48,7 +48,7 @@ final as (
 
     left join customer_orders using (customer_id)
     left join lifetime
-        ON lifetime.customer_id=customer.customer_id
+        ON lifetime.customer_id=customers.customer_id
 
 )
 
